@@ -47,17 +47,17 @@ def login():
 @app.route('/tasks/')
 @login_required
 def tasks():
-    g.db = connect_db
+    g.db = connect_db()
     cur = g.db.execute(
-        'select name, due_date, priority, task_id from ftasks where status=1'
+        'select name, due_date, priority, task_id from tasks where status=1'
     )
     open_tasks = [dict(name=row[0], due_date=row[1], priority=row[2], \
-        task_id=row[3]) for row in cur.fetch_all()]
+        task_id=row[3]) for row in cur.fetchall()]
     cur = g.db.execute(
-        'select name, due_date, priority, task_id from ftasks where status=0'
+        'select name, due_date, priority, task_id from tasks where status=0'
     )
     closed_tasks = [dict(name=row[0], due_date=row[1], priority=row[2], \
-        task_id=row[3]) for row in cur.fetch_all()]
+        task_id=row[3]) for row in cur.fetchall()]
     g.db.close()
     return render_template(
         'tasks.html',
