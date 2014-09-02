@@ -2,7 +2,7 @@
 
 
 from flask import Flask, flash, redirect, render_template, request, \
-    session, url_for
+    session, url_for, g
 from functools import wraps
 import sqlite3
 
@@ -43,3 +43,25 @@ def login():
             return redirect(url_for('tasks'))
     if request.method == 'GET':
         return render_template('login.html')
+
+@app.route('/tasks/')
+@login_required
+def tasks():
+    g.db = connect_db
+    cur = g.db.execute(
+        'select name, due_date, priority, task_id from ftasks where status=1'
+    )
+    open_tasks = [dict(name=row[0], due_date=row[1], priority=row[2], \
+        task_id=row[3]) for row in cur.fetch_all()]
+    cur = g.db.execute(
+        'select name, due_date, priority, task_id from ftasks where status=0'
+    )
+    closed_tasks = [dict(name=row[0], due_date=row[1], priority=row[2], \
+        task_id=row[3]) for row in cur.fetch_all()]
+    g.db.close()
+    return render_template(
+        'tasks.html',
+        form=AddTask(request.form),
+        open_tasks=open_tasks,
+        closed_tasks=closed_tasks
+        )
