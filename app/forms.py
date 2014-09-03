@@ -23,6 +23,7 @@ class AddTaskForm(Form):
     )
     status = IntegerField('Status')
 
+
 class RegisterForm(Form):
     name = TextField(
         'Username',
@@ -40,6 +41,7 @@ class RegisterForm(Form):
         'Repeat Password',
         [DataRequired(), EqualTo('password', message='Passwords must match')]
     )
+
 
 class LoginForm(Form):
     name = TextField('Username', validators=[DataRequired()])
