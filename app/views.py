@@ -5,6 +5,7 @@ from flask import Flask, flash, redirect, render_template, request, \
     session, url_for, g
 from functools import wraps
 import sqlite3
+from forms import AddTaskForm
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -64,13 +65,13 @@ def tasks():
     g.db.close()
     return render_template(
         'tasks.html',
-        form=AddTask(request.form),
+        form=AddTaskForm(request.form),
         open_tasks=open_tasks,
         closed_tasks=closed_tasks
     )
 
 # add new tasks:
-@app.route('/add/')
+@app.route('/add/', methods=['POST'])
 @login_required
 def new_task():
     g.db = connect_db()
@@ -96,8 +97,8 @@ def new_task():
 def complete(task_id):
     g.db = connect_db()
     g.db.execute(
-        'update tasks set status = 0 where task_id='+str(task_id)
-        )
+        'update tasks set status = 0 where task_id='+str(task_id))
+    g.db.commit()
     g.db.close()
     flash('The task was marked as complete.')
     return redirect(url_for('tasks'))
@@ -107,8 +108,9 @@ def complete(task_id):
 @login_required
 def delete_entry(task_id):
     g.db = connect_db()
+    g.db.execute('delete from tasks where task_id='+str(task_id))
     g.db.commit()
     g.db.close()
     flash('The task was deleted.')
     return redirect(url_for('tasks'))
-
+    
