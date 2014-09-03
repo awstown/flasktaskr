@@ -7,12 +7,13 @@ from functools import wraps
 from forms import AddTaskForm, RegisterForm, LoginForm
 from flask.ext.sqlalchemy import SQLAlchemy
 
+# config
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
 
 # import the model
-from models import Task
+from models import Task, User
 
 def login_required(test):
     @wraps(test)
@@ -45,6 +46,26 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
 
+# User registration
+@app.route('/register/', methods=['GET', 'POST'])
+def register():
+    error = None
+    form = RegisterForm(request.form)
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            new_user = User(
+                form.name.data,
+                form.email.data,
+                form.password.data,
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Thanks for registering. Plase login.')
+            return redirect(url_for('login'))
+        else:
+            return render_template('register.html', form=form, error=error)
+    if request.method == 'GET':
+        return render_template('register.html', form=form, error=error)
 
 @app.route('/tasks/')
 @login_required
