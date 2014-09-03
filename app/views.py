@@ -1,10 +1,10 @@
 # views.py
 
-
+# imports
 from flask import Flask, flash, redirect, render_template, request, \
     session, url_for
 from functools import wraps
-from forms import AddTaskForm
+from forms import AddTaskForm, RegisterForm, LoginForm
 from flask.ext.sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
