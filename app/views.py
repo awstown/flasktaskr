@@ -26,13 +26,6 @@ def login_required(test):
             return redirect(url_for('login'))
     return wrap
 
-def flash_errors(form):
-    for field, errors in form.errors.items():
-        for error in errors:
-            flash(u"Error in the %s field - %s" % (
-                getattr(form, field).label.text, error), 'error')
-
-
 @app.route('/logout/')
 def logout():
     session.pop('logged_in', None)
@@ -60,7 +53,6 @@ def login():
                 flash('You are logged in. Go Crazy!')
                 return redirect(url_for('tasks'))
         else:
-            flash_errors(form)
             return render_template('login.html', error=error, form=form)
     if request.method == 'GET':
         return render_template('login.html', error=error, form=form)
@@ -82,7 +74,6 @@ def register():
             flash('Thanks for registering. Plase login.')
             return redirect(url_for('login'))
         else:
-            flash_errors(form)
             return render_template('register.html', form=form, error=error)
     if request.method == 'GET':
         return render_template('register.html', form=form, error=error)
@@ -119,8 +110,6 @@ def new_task():
             db.session.add(new_task)
             db.session.commit()
             flash('New entry was succesfully posted. Thanks.')
-        else:
-            flash_errors(form)
     return redirect(url_for('tasks'))
 
 # Mark tasks as complete:
