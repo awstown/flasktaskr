@@ -73,7 +73,7 @@ def register():
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                flash('Thanks for registering. Plase login.')
+                flash('Thanks for registering. Please login.')
                 return redirect(url_for('login'))
             except IntegrityError:
                 error = 'Oh no! That username and/or email already exist. Please try again.'
@@ -81,7 +81,7 @@ def register():
         else:
             return render_template('register.html', form=form, error=error)
     if request.method == 'GET':
-        return render_template('register.html', form=form, error=error)
+        return render_template('register.html', form=form)
 
 @app.route('/tasks/')
 @login_required
