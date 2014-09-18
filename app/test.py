@@ -39,6 +39,9 @@ class Users(unittest.TestCase):
             name=name, email=email,
             password=password, confirm=confirm), follow_redirects=True)
 
+    def logout(self):
+        return self.app.get('logout/', follow_redirects=True)
+
     ### TESTS
     # each test should start with 'test'
 
@@ -88,6 +91,16 @@ class Users(unittest.TestCase):
         self.app.get('register/', follow_redirects=True)
         response = self.register('Michael', 'michael@realpython.com', 'python', 'python')
         self.assertIn('Oh no! That username and/or email already exist.', response.data)
+
+    def test_logged_in_users_can_logout(self):
+        self.register('Fletcher', 'fletcher@realpython.com', 'python101', 'python101')
+        self.login('Fletcher', 'python101')
+        response = self.logout()
+        self.assertIn('You are logged out. Bye. :(', response.data)
+
+    def test_logged_in_users_cannot_logout(self):
+        response = self.logout()
+        self.assertNotIn('You are logged out. Bye. :(', response.data)
         
 if __name__ == '__main__':
     unittest.main()
