@@ -2,9 +2,12 @@
 *.pyc
  
 ## generic files to ignore
+.coverage
 *~
 *.lock
 *.DS_Store
 *.swp
 *.out
 /env
+/cover
+/app/cover
