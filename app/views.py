@@ -27,6 +27,12 @@ def login_required(test):
             return redirect(url_for('login'))
     return wrap
 
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(u"Error in the %s field - %s" % (
+                getattr(form, field).label.text, error), 'error')
+
 @app.route('/logout/')
 @login_required
 def logout():
@@ -102,6 +108,7 @@ def tasks():
 @app.route('/add/', methods=['GET', 'POST'])
 @login_required
 def new_task():
+    error = None
     form = AddTaskForm(request.form)
     if request.method == 'POST':
         if form.validate_on_submit():
@@ -116,6 +123,8 @@ def new_task():
             db.session.add(new_task)
             db.session.commit()
             flash('New entry was succesfully posted. Thanks.')
+        else:
+            return render_template('tasks.html', form=form, error=error)
     return redirect(url_for('tasks'))
 
 # Mark tasks as complete:

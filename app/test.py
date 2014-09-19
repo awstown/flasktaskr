@@ -42,6 +42,20 @@ class Users(unittest.TestCase):
     def logout(self):
         return self.app.get('logout/', follow_redirects=True)
 
+    def create_user(self, name, email, password):
+        new_user = User(name=name, email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+
+    def create_task(self):
+        return self.app.post('add/', data=dict(
+            name='Go to the bank',
+            due_date='02/05/2014',
+            priority='1',
+            posted_date='02/04/2014',
+            status='1'
+        ), follow_redirects=True)
+
     ### TESTS
     # each test should start with 'test'
 
@@ -112,6 +126,29 @@ class Users(unittest.TestCase):
     def test_not_logged_in_users_cannot_access_tasks_page(self):
         response = self.app.get('tasks/', follow_redirects=True)
         self.assertIn('You need to login first.', response.data)
-        
+    
+    def test_users_can_add_tasks(self):
+        self.create_user('Michael', 'michael@realpython.com', 'python')
+        self.login('Michael', 'python')
+        self.app.get('tasks/', follow_redirects=True)
+        response = self.create_task()
+        self.assertIn(
+                'New entry was succesfully posted. Thanks.', response.data
+        )
+
+    def test_users_cannot_add_tasks_when_error(self):
+        self.create_user('Michael', 'michael@realpython.com', 'python')
+        self.login('Michael', 'python')
+        self.app.get('tasks/', follow_redirects=True)
+        response = self.app.post('add/', data=dict(
+            name='Go to the bank',
+            due_date='',
+            priority='1',
+            posted_date='02/05/2014',
+            status='1'
+        ), follow_redirects=True)
+        self.assertIn('This field is required.', response.data)    
+
+
 if __name__ == '__main__':
     unittest.main()
