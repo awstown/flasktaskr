@@ -101,6 +101,17 @@ class Users(unittest.TestCase):
     def test_logged_in_users_cannot_logout(self):
         response = self.logout()
         self.assertNotIn('You are logged out. Bye. :(', response.data)
+
+    def test_logged_in_users_can_access_tasks(self):
+        self.register('Fletcher', 'fletcher@realpython.com', 'python101', 'python101')
+        self.login('Fletcher', 'python101')
+        response = self.app.get('tasks/')
+        self.assertEquals(response.status_code, 200)
+        self.assertIn('Add a new task:', response.data)
+
+    def test_not_logged_in_users_cannot_access_tasks_page(self):
+        response = self.app.get('tasks/', follow_redirects=True)
+        self.assertIn('You need to login first.', response.data)
         
 if __name__ == '__main__':
     unittest.main()
