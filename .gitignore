@@ -2,6 +2,7 @@
 *.pyc
  
 ## generic files to ignore
+test.db
 .coverage
 *~
 *.lock

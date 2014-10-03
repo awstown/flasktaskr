@@ -58,7 +58,7 @@ def login():
             else:
                 session['logged_in'] = True
                 session['user_id'] = u.id
-                flash('You are logged in. Go Crazy!')
+                flash('You are logged in. Go Crazy.')
                 return redirect(url_for('tasks'))
         else:
             return render_template('login.html', error=error, form=form)
@@ -122,7 +122,7 @@ def new_task():
             )
             db.session.add(new_task)
             db.session.commit()
-            flash('New entry was succesfully posted. Thanks.')
+            flash('New entry was successfully posted. Thanks.')
         else:
             return render_template('tasks.html', form=form, error=error)
     return redirect(url_for('tasks'))
