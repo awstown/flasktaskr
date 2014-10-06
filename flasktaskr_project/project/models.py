@@ -1,7 +1,7 @@
 # models
 
 
-from views import db
+from project import db
 
 
 class Task(db.Model):

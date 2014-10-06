@@ -1,7 +1,11 @@
+<!-- /project/users/templates/login.html -->
+
 {% extends "template.html" %}
+
 {% block content %}
+    
     <h1> Welcome to FlaskTaskr.</h1>
-    <form class="form-signin" role="form" method="post" action="/">
+    <form class="form-signin" role="form" method="post" action="/users/">
         <div class="lead">Please sign in to access your task list.</div>
         {{ form.csrf_token }}
         <p>
@@ -27,6 +31,6 @@
         <button class="btn btn-sm btn-success">Sign In</button>
         <br>
         <br>
-        <p><em>Need an account? </em><a href="/register">SignUp!!</a></p>
+        <p><em>Need an account? </em><a href="{{ url_for('users.register') }}">SignUp!!</a></p>
     </form>
 {% endblock %}
