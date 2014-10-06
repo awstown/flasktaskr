@@ -4,7 +4,7 @@
 import os
 import unittest
 
-from project import app, db
+from project import app, db, bcrypt
 from config import basedir
 from project.models import User
 
@@ -48,7 +48,7 @@ class UsersTests(unittest.TestCase):
         new_user = User(
             name='Michael',
             email='michael@realpython.com',
-            password='python'
+            password=bcrypt.generate_password_hash('python')
         )
         db.session.add(new_user)
         db.session.commit()
