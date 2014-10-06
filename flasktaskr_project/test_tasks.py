@@ -87,6 +87,16 @@ class TasksTests(unittest.TestCase):
             status='1'
         ), follow_redirects=True)
 
+    ###################
+    #### templates ####
+    ###################
+
+    def test_tast_template_displays_logged_in_user_name(self):
+        self.register()
+        self.login('Fletcher', 'python101')
+        response = self.app.get('tasks/tasks/', follow_redirects=True)
+        self.assertIn('Fletcher', response.data)
+
     ###############
     #### views ####
     ###############
