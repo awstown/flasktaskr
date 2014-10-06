@@ -98,6 +98,62 @@ class TasksTests(unittest.TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertIn('Add a new task:', response.data)
 
+    def test_users_cannot_see_task_modify_links_for_tasks_not_created_by_them(self):
+        self.create_user()
+        self.login('Michael', 'python')
+        self.app.get('tasks/tasks/', follow_redirects=True)
+        self.create_task()
+        self.logout()
+        self.register()
+        response = self.login('Fletcher', 'python101')
+        self.app.get('tasks/tasks/', follow_redirects=True)
+        self.assertNotIn(
+            'Mark as complete', response.data
+        )
+        self.assertNotIn(
+            'Delete', response.data
+        )
+
+    def test_users_can_see_task_modify_links_for_tasks_created_by_them(self):
+        self.create_user()
+        self.login('Michael', 'python')
+        self.app.get('tasks/tasks/', follow_redirects=True)
+        self.create_task()
+        self.logout()
+        self.register()
+        self.login('Fletcher', 'python101')
+        self.app.get('tasks/tasks/', follow_redirects=True)
+        response = self.create_task()
+        self.assertIn(
+            'tasks/complete/2/', response.data
+        )
+        self.assertIn(
+            'tasks/delete/2/', response.data
+        )
+
+    def test_admin_users_can_see_task_modify_links_for_all_tasks(self):
+        self.create_user()
+        self.login('Michael', 'python')
+        self.app.get('tasks/tasks/', follow_redirects=True)
+        self.create_task()
+        self.logout()
+        self.create_admin_user()
+        self.login('Superman', 'allpowerful')
+        self.app.get('tasks/tasks/', follow_redirects=True)
+        response = self.create_task()
+        self.assertIn(
+            'tasks/complete/1/', response.data
+        )
+        self.assertIn(
+            'tasks/delete/1/', response.data
+        )
+        self.assertIn(
+            'tasks/complete/2/', response.data
+        )
+        self.assertIn(
+            'tasks/delete/2/', response.data
+        )
+
     def test_not_logged_in_users_cannot_access_tasks_page(self):
         response = self.app.get('tasks/tasks/', follow_redirects=True)
         self.assertIn('You need to login first.', response.data)
