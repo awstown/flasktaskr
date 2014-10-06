@@ -65,8 +65,12 @@
             <td width="50px">{{ o.priority }}</td>
             <td width="90px">{{ o.poster.name }}</td>
             <td>
-              <a href="{{ url_for('tasks.delete_entry', task_id = o.task_id) }}">Delete</a>  -
-              <a href="{{ url_for('tasks.complete', task_id = o.task_id) }}">Mark as Complete</a>
+              {% if o.poster.name == session.name or session.role == "admin" %}
+                <a href="{{ url_for('tasks.delete_entry', task_id = o.task_id) }}">Delete</a>  -
+                <a href="{{ url_for('tasks.complete', task_id = o.task_id) }}">Mark as Complete</a>
+              {% else %}
+                <span>N/A</span>
+              {% endif %} 
             </td>
           </tr>
         {% endfor %}
@@ -97,7 +101,11 @@
             <td width="50px">{{ c.priority }}</td>
             <td width="90px">{{ c.poster.name }}</td>
             <td>
-               <a href="{{ url_for('tasks.delete_entry', task_id = c.task_id) }}">Delete</a>
+              {% if c.poster.name == session.name or session.role == "admin" %}
+                <a href="{{ url_for('tasks.delete_entry', task_id = c.task_id) }}">Delete</a>
+              {% else %}
+                <span>N/A</span>
+              {% endif %}
             </td>
           </tr>
         {% endfor %}
