@@ -1,0 +1,16 @@
+#python specific
+*.pyc
+ 
+## generic files to ignore
+*.log
+test.db
+.coverage
+*~
+*.lock
+*.DS_Store
+*.swp
+*.out
+/env
+/cover
+/app/cover
+/flasktaskr_project/cover
