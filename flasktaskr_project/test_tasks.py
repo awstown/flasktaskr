@@ -21,10 +21,13 @@ class TasksTests(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
         app.config['WTF_CSRF_ENABLED'] = False
+        app.config['DEBUG'] = False
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
             os.path.join(basedir, TEST_DB)
         self.app = app.test_client()
         db.create_all()
+
+        self.assertEquals(app.debug, False)
 
     # executed after to each test
     def tearDown(self):
@@ -91,7 +94,7 @@ class TasksTests(unittest.TestCase):
     #### templates ####
     ###################
 
-    def test_tast_template_displays_logged_in_user_name(self):
+    def test_task_template_displays_logged_in_user_name(self):
         self.register()
         self.login('Fletcher', 'python101')
         response = self.app.get('tasks/tasks/', follow_redirects=True)
